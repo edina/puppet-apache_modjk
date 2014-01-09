@@ -1,0 +1,13 @@
+# AJP Worker -- <%= @name %>
+<% unless @parent_balancer -%>
+  worker.list=<%= @name %>
+<% end -%>
+worker.<%= @name -%>.type=<%= @type %>
+worker.<%= @name -%>.host=<%= @host %>
+worker.<%= @name -%>.port=<%= @port %>
+worker.<%= @name -%>.socket_keepalive=<%= @socket_keepalive %>
+worker.<%= @name -%>.socket_timeout=<%= @socket_timeout %>
+<% if @parent_balancer -%>
+worker.<%= @parent_balancer %>.balance_workers=<%= @name %>
+<% end -%>
+
