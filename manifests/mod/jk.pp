@@ -41,7 +41,7 @@ class apache_modjk::mod::jk (
   file { 'jk.conf':
     ensure  => file,
     path    => "${::apache::mod_dir}/jk.conf",
-    content => template('apache/mod/jk.conf.erb'),
+    content => template("${module_name}/mod/jk.conf.erb"),
     require => Exec["mkdir ${::apache::mod_dir}"],
     before  => File[$::apache::mod_dir],
     notify  => Service['httpd'],
@@ -49,11 +49,25 @@ class apache_modjk::mod::jk (
 
   # Concat target for global JkMount directives
   concat { 'jk_mount.conf':
-    name => "${::apache::mod_dir}/jk_mount.conf",
+    name    => "${::apache::mod_dir}/jk_mount.conf",
+    notify  => Service['httpd'],
+  }
+
+  concat::fragment {'jk_mount_header':
+    target  => "${::apache::mod_dir}/jk_mount.conf",
+    content => "## mod_jk Global Mount Configuration\n## This file is controlled by Puppet\n##\n\n",
+    order   => '01',
   }
 
   # Concat target for building JK Worker settings file
   concat { 'jk.workers.properties':
-    name => $jkworkersfile,
+    name    => $jkworkersfile,
+    notify  => Service['httpd'],
+  }
+
+  concat::fragment {'jk_worker_header':
+    target  => $jkworkersfile,
+    content => "## mod_jk Worker Properties Configuration\n## This file is controlled by Puppet\n##\n\n",
+    order   => '01',
   }
 }
