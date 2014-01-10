@@ -33,6 +33,6 @@ define apache_modjk::mod::jk::mount (
 
   concat::fragment { $url_prefix:
     target  => "${::apache::mod_dir}/jk_mount.conf",
-    content => "JkMount ${url_prefix} ${worker}"
+    content => "JkMount ${url_prefix} ${worker}/n"
   }
 }
